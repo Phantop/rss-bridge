@@ -11,8 +11,6 @@
  *
  * Notes about the implementation:
  *
- * - The item author is not supported as it needs to be an e-mail address to be
- *   valid.
  * - The RSS specification does not explicitly allow to have more than one
  *   enclosure as every item is meant to provide one "story", thus having
  *   multiple enclosures per item may lead to unexpected behavior.
@@ -116,6 +114,7 @@ class MrssFormat extends FormatAbstract
 
         foreach ($this->getItems() as $item) {
             $itemArray = $item->toArray();
+            $itemAuthor = $item->getAuthor();
             $itemTimestamp = $item->getTimestamp();
             $itemTitle = $item->getTitle();
             $itemUri = $item->getURI();
@@ -141,6 +140,12 @@ class MrssFormat extends FormatAbstract
                 $entryTitle = $document->createElement('title');
                 $entry->appendChild($entryTitle);
                 $entryTitle->appendChild($document->createTextNode($itemTitle));
+            }
+
+            if (!empty($itemAuthor)) {
+                $entryAuthor = $document->createElement('author');
+                $entry->appendChild($entryAuthor);
+                $entryAuthor->appendChild($document->createTextNode($itemAuthor));
             }
 
             if (isset($itemArray['itunes'])) {
